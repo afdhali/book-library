@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { ReactNode } from "react";
 
-const Layout = ({ children }: { children: ReactNode }) => {
+const AuthLayout = async ({ children }: { children: ReactNode }) => {
   return (
     <main className="auth-container">
       <section className="auth-form">
@@ -27,4 +27,4 @@ const Layout = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default Layout;
+export default AuthLayout;

@@ -3,7 +3,11 @@ import { z } from "zod";
 export const signUpSchema = z.object({
   fullName: z.string().min(3),
   email: z.string().email(),
-  universityId: z.coerce.number(),
+  universityId: z.coerce
+    .number()
+    .int("University ID must be a valid number")
+    .min(1, "University ID must be greater than 0")
+    .max(999999999, "University ID cannot exceed 9 digits"), // Lebih masuk akal
   universityCard: z.string().nonempty("University Card is required"),
   password: z.string().min(8),
 });

@@ -1,4 +1,4 @@
-// src/app/api/auth/imagekit/route.ts
+// src/app/api/imagekit/route.ts
 
 import ImageKit from "imagekit";
 import config from "@/lib/config";

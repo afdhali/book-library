@@ -1,28 +1,27 @@
 "use client";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
+
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
 
 const Header = () => {
-  const pathname = usePathname();
+  const handleSignOut = async () => {
+    await signOut({
+      redirect: true,
+      callbackUrl: "/sign-in", // redirect ke halaman sign-in setelah logout
+    });
+  };
+
   return (
     <header className="my-10 flex justify-between gap-5">
-      <Link href={"/"}>
-        <Image src={"/icons/logo.svg"} alt="logo" width={40} height={40} />
+      <Link href="/">
+        <Image src="/icons/logo.svg" alt="logo" width={40} height={40} />
       </Link>
+
       <ul className="flex flex-row items-center gap-8">
         <li>
-          <Link
-            href={"/library"}
-            className={cn(
-              "text-base cursor-pointer capitalize",
-              pathname === "/library" ? "text-light-200" : "text-light-100"
-            )}
-          >
-            Library
-          </Link>
+          <Button onClick={handleSignOut}>Logout</Button>
         </li>
       </ul>
     </header>
