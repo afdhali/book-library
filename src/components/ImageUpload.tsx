@@ -15,14 +15,15 @@ import { useRef, useState } from "react";
 
 const {
   env: {
-    apiEndpoint,
     imagekit: { publicKey, urlEndpoint },
+    prodApiEndpoint,
   },
 } = config;
 
 const authenticator = async () => {
   try {
-    const response = await fetch(`${apiEndpoint}/api/imagekit`);
+    // const response = await fetch(`${apiEndpoint}/api/imagekit`);
+    const response = await fetch(`${prodApiEndpoint}/api/imagekit`);
     if (!response.ok) {
       const errorText = await response.text();
 
