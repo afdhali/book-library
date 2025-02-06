@@ -2,8 +2,17 @@ import Image from "next/image";
 import React from "react";
 import { Button } from "./ui/button";
 import BookCover from "./BookCover";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import BorrowBook from "./BorrowBook";
+import config from "@/lib/config";
 
-const BookOverview = ({
+interface Props extends Book {
+  userId: string;
+}
+
+const BookOverview = async ({
   title,
   author,
   genre,
@@ -13,7 +22,17 @@ const BookOverview = ({
   description,
   coverColor,
   coverUrl,
-}: Book) => {
+  userId,
+  id,
+}: Props) => {
+  const [user] = await db.select().from(users).where(eq(users.id, userId));
+  const borrowingEligibility = {
+    isEligible: availableCopies > 0 && user?.status === "APPROVED",
+    message:
+      availableCopies <= 0
+        ? "Book is not available"
+        : "You are not eligble to borrow this book",
+  };
   return (
     <section className="book-overview">
       <div className="flex flex-1 flex-col gap-5">
@@ -41,10 +60,17 @@ const BookOverview = ({
             </p>
           </div>
           <p className="book-description">{description}</p>
-          <Button className="book-overview_btn">
+          {user && (
+            <BorrowBook
+              bookId={id}
+              userId={userId}
+              borrowingEligibility={borrowingEligibility}
+            />
+          )}
+          {/* <Button className="book-overview_btn">
             <Image src={"/icons/book.svg"} alt="book" width={20} height={20} />
             <p className="font-bebas-neue text-xl text-dark-100">Borrow Book</p>
-          </Button>
+          </Button> */}
         </div>
       </div>
 
@@ -54,13 +80,13 @@ const BookOverview = ({
             variant="wide"
             className="z-10"
             coverColor={coverColor}
-            coverImage={coverUrl}
+            coverImage={`${config.env.imagekit.urlEndpoint}/${coverUrl}`}
           />
           <div className="absolute left-16 top-10 rotate-12 opacity-40 max-sm:hidden">
             <BookCover
               variant="wide"
               coverColor={coverColor}
-              coverImage={coverUrl}
+              coverImage={`${config.env.imagekit.urlEndpoint}/${coverUrl}`}
             />
           </div>
         </div>

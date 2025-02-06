@@ -1,15 +1,26 @@
 import BookOverview from "@/components/BookOverview";
 import { sampleBooks } from "@/constants/datadummy";
+import { db } from "@/db";
+import { books } from "@/db/schema";
+import { authOptions } from "@/lib/auth.config";
+import { eq } from "drizzle-orm";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import React from "react";
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
-  const [bookDetails] = sampleBooks.filter((book) => book.id === Number(id));
+  // const [bookDetails] = sampleBooks.filter((book) => book.id === Number(id));
+  const session = await getServerSession(authOptions);
+  const [bookDetails] = await db
+    .select()
+    .from(books)
+    .where(eq(books.id, id))
+    .limit(1);
   if (!bookDetails) redirect("/404");
   return (
     <>
-      <BookOverview {...(bookDetails as unknown as Book)} />
+      <BookOverview {...bookDetails} userId={session?.user?.id as string} />
 
       <div className="book0details">
         <div className="flex-[1.5]">
