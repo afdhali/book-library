@@ -83,14 +83,14 @@ export async function submitActionSignUp(data: AuthCredentials) {
     });
 
     await workflowClient.trigger({
-      url: `${config.env.apiEndpoint}/api/workflows/onboarding`,
+      url: `${config.env.prodApiEndpoint}/api/workflows/onboarding`,
       body: {
         email,
         fullName,
       },
     });
 
-    await submitActionSignIn({ email, password });
+    // await submitActionSignIn({ email, password });
 
     return { success: true };
   } catch (error) {
